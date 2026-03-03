@@ -1,30 +1,33 @@
 class Solution {
     
-    public void  backtrack(String s, Set<String>set, List<Integer> map, StringBuffer str){
+    public void  backtrack(char []arr,boolean []visited,ArrayList<String> ans,StringBuilder currPerm){
         
-        
-        //base case
-        if(str.length()==s.length()){
-            
-            set.add(str.toString());
+        if(currPerm.length() == arr.length){
+            ans.add(currPerm.toString());
             return;
         }
         
-        //choise
-        for(int i=0;i<s.length();i++){
+        for(int i=0;i<arr.length;i++){
             
-            if(!map.contains(i)){
-                
-                str.append(s.charAt(i));
-                map.add(i);
-                
-                backtrack(s,set,map,str);
-                
-                str.delete(str.length()-1,str.length());
-                map.remove(map.size()-1);
-                 
-                
+            
+            //if 
+            if(visited[i]){
+                continue;
             }
+            
+            if(i>0 && arr[i-1]==arr[i] && visited[i-1]==false){
+                continue;
+            }
+            
+            visited[i] = true;
+            currPerm.append(arr[i]);
+            
+            backtrack(arr,visited,ans,currPerm);
+            
+            visited[i] = false;
+            currPerm.delete(currPerm.length()-1,currPerm.length());
+            
+            
         }
     }
     
@@ -32,15 +35,15 @@ class Solution {
     
     public ArrayList<String> findPermutation(String s) {
         
-        Set<String> set = new HashSet<String>();
-        List<Integer> map = new ArrayList<Integer>();
+        char[] arr = s.toCharArray();
+        Arrays.sort(arr); 
         
-        StringBuffer str = new StringBuffer();
+        boolean visited[] = new boolean[arr.length];
+        ArrayList<String> ans = new ArrayList<String>();
         
-        backtrack(s,set,map,str);
+        backtrack(arr,visited,ans,new StringBuilder());
         
         
-        ArrayList<String>  ans = new ArrayList<>(set);
         return ans;
         
     }
